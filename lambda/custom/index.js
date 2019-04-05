@@ -75,9 +75,11 @@ const GetNewFactHandler = {
     if (spokenQuery.includes(" not ")) {
       fact = "Good Decision!";
     } else if (keywords && spokenQuery.includes("meat")) {
-      fact = "Oh no, You  will be contributing to total consumption to meat.";
+      fact =
+        "Did you know? Meat consumption by a family of four per year is equivalent to Greenhouse gas emissions by 10 cars driven per year.";
     } else if (spokenQuery.includes("meat")) {
-      fact = "Oh no, You just contributed to total consumption of meat.";
+      fact =
+        "Did you know? Meat consumption by a family of four per year is equivalent to Greenhouse gas emissions by 10 cars driven per year.";
     } else if (keywords) {
       fact = "Added it to your shopping list.";
     } else if (spokenQuery.includes("bought")) {
