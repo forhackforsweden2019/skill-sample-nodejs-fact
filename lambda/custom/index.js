@@ -76,7 +76,7 @@ const GetNewFactHandler = {
       fact = "Good Decision!";
     } else if (keywords && spokenQuery.includes("meat")) {
       fact = "Oh no, You  will be contributing to total consumption to meat.";
-    } else if (spokenQuery.includes("red meat")) {
+    } else if (spokenQuery.includes("meat")) {
       fact = "Oh no, You just contributed to total consumption of meat.";
     } else if (keywords) {
       fact = "Added it to your shopping list.";
