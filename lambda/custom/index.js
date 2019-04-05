@@ -17,17 +17,79 @@ const GetNewFactHandler = {
     );
   },
   handle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    const spokenQuery = request.intent.slots.spokenQuery.value;
+
+    const notRegex = /\snot\s/;
+    const planToBuy = /will|may|can/;
+    const alreadyBought = /bought/;
+    const redMeat = /red meat/;
+
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     // gets a random fact by assigning an array to the variable
     // the random item from the array will be selected by the i18next library
     // the i18next library is set up in the Request Interceptor
-    const randomFact = requestAttributes.t("FACTS");
+    // const randomFact = requestAttributes.t("FACTS");
     // concatenates a standard message with the random fact
-    const speakOutput = requestAttributes.t("GET_FACT_MESSAGE") + randomFact;
+    // const speakOutput = requestAttributes.t("GET_FACT_MESSAGE") + randomFact;
+
+    const enData = {
+      SKILL_NAME: "Sweden's Grownups",
+      GET_FACT_MESSAGE: "",
+      HELP_MESSAGE: "You can say what should I buy today?",
+      HELP_REPROMPT: "What can I help you with?",
+      FALLBACK_MESSAGE:
+        "The Sweden's Grownups skill can't help you with that.  It can help you discover your environment friendly habits. What can I help you with?",
+      FALLBACK_REPROMPT: "What can I help you with?",
+      ERROR_MESSAGE: "Sorry, an error occurred.",
+      STOP_MESSAGE: "Goodbye!",
+      FACTS: [
+        "I know that it was a while since you had beef. This week you already had vegetarian, poultry and fish.",
+        "Can you try Fish? Trout is on sale today.",
+        "You are in red zone for the last week in your region.",
+        "But you know what, there is an alternative to meat in the store, would you like me to replace meat with it?",
+        "You used 60 percentage of your allowance. Keep up the good work and you’ll have an extra environmental friendly week."
+      ],
+      PLAN_TO_BUY: ["Added it to your shopping list."],
+      BOUGHT: ["Removed it from your shopping list."],
+      EATS_RED_MEAT: ["You just contributed to total consumption of red meat."],
+      DOES_NOT_RED_MEAT: [
+        "Congratulations! You saved this earth by avoiding red meat."
+      ],
+      NOT: ["Good Decision!"]
+    };
+
+    // 86.5 kg / per person per year / 2017
+
+    // 5.7 billions kgs of coal burned.
+    //
+
+    const keywords =
+      spokenQuery.includes("will") ||
+      spokenQuery.includes("may") ||
+      spokenQuery.includes("can") ||
+      spokenQuery.includes("buy") ||
+      spokenQuery.includes("going");
+
+    let fact = "";
+    if (spokenQuery.includes(" not ")) {
+      fact = "Good Decision!";
+    } else if (keywords && spokenQuery.includes("meat")) {
+      fact = "Oh no, You  will be contributing to total consumption to meat.";
+    } else if (spokenQuery.includes("red meat")) {
+      fact = "Oh no, You just contributed to total consumption of meat.";
+    } else if (keywords) {
+      fact = "Added it to your shopping list.";
+    } else if (spokenQuery.includes("bought")) {
+      fact = "Removed it from your shopping list.";
+    } else {
+      fact = "I'm thinking...";
+    }
+    const speakOutput = fact;
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
-      .withSimpleCard(requestAttributes.t("SKILL_NAME"), randomFact)
+      .withSimpleCard(requestAttributes.t("SKILL_NAME"), fact)
       .getResponse();
   }
 };
@@ -178,7 +240,14 @@ const deData = {
       "Venus dreht sich entgegen dem Uhrzeigersinn, möglicherweise aufgrund eines früheren Zusammenstoßes mit einem Asteroiden.",
       "Auf dem Mars erscheint die Sonne nur halb so groß wie auf der Erde.",
       "Jupiter hat den kürzesten Tag aller Planeten."
-    ]
+    ],
+    PLAN_TO_BUY: ["Added it to your shopping list."],
+    BOUGHT: ["Removed it from your shopping list."],
+    EATS_RED_MEAT: ["You just contributed to total consumption of red meat."],
+    DOES_NOT_RED_MEAT: [
+      "Congratulations! You saved this earth by avoiding red meat."
+    ],
+    NOT: ["Good Decision"]
   }
 };
 
@@ -195,7 +264,7 @@ const dedeData = {
 const enData = {
   translation: {
     SKILL_NAME: "Sweden's Grownups",
-    GET_FACT_MESSAGE: "Here's your fact: ",
+    GET_FACT_MESSAGE: "",
     HELP_MESSAGE: "You can say what should I buy today?",
     HELP_REPROMPT: "What can I help you with?",
     FALLBACK_MESSAGE:
@@ -209,6 +278,12 @@ const enData = {
       "You are in red zone for the last week in your region.",
       "But you know what, there is an alternative to meat in the store, would you like me to replace meat with it?",
       "You used 60 percentage of your allowance. Keep up the good work and you’ll have an extra environmental friendly week."
+    ],
+    PLAN_TO_BUY: ["Added it to your shopping list."],
+    BOUGHT: ["Removed it from your shopping list."],
+    EATS_RED_MEAT: ["You just contributed to total consumption of red meat."],
+    DOES_NOT_RED_MEAT: [
+      "Congratulations! You saved this earth by avoiding red meat."
     ]
   }
 };
@@ -261,6 +336,12 @@ const esData = {
       "En Marte el sol se ve la mitad de grande que en la Tierra",
       "Jupiter tiene el día más corto de todos los planetas",
       "El sol es una esféra casi perfecta"
+    ],
+    PLAN_TO_BUY: ["Added it to your shopping list."],
+    BOUGHT: ["Removed it from your shopping list."],
+    EATS_RED_MEAT: ["You just contributed to total consumption of red meat."],
+    DOES_NOT_RED_MEAT: [
+      "Congratulations! You saved this earth by avoiding red meat."
     ]
   }
 };
@@ -295,6 +376,12 @@ const frData = {
       "Sur Mars, le Soleil apparaît environ deux fois plus petit que sur Terre.",
       "De toutes les planètes, Jupiter a le jour le plus court.",
       "Le Soleil est une sphère presque parfaite."
+    ],
+    PLAN_TO_BUY: ["Added it to your shopping list."],
+    BOUGHT: ["Removed it from your shopping list."],
+    EATS_RED_MEAT: ["You just contributed to total consumption of red meat."],
+    DOES_NOT_RED_MEAT: [
+      "Congratulations! You saved this earth by avoiding red meat."
     ]
   }
 };
@@ -323,6 +410,12 @@ const itData = {
       "Su Marte il sole appare grande la metà che su la terra. ",
       "Tra tutti i pianeti del sistema solare, la giornata più corta è su Giove.",
       "Il Sole è quasi una sfera perfetta."
+    ],
+    PLAN_TO_BUY: ["Added it to your shopping list."],
+    BOUGHT: ["Removed it from your shopping list."],
+    EATS_RED_MEAT: ["You just contributed to total consumption of red meat."],
+    DOES_NOT_RED_MEAT: [
+      "Congratulations! You saved this earth by avoiding red meat."
     ]
   }
 };
@@ -349,6 +442,12 @@ const jpData = {
       "火星上から見ると、太陽の大きさは地球から見た場合の約半分に見えます。",
       '木星の<sub alias="いちにち">1日</sub>は全惑星の中で一番短いです。',
       "天の川銀河は約50億年後にアンドロメダ星雲と衝突します。"
+    ],
+    PLAN_TO_BUY: ["Added it to your shopping list."],
+    BOUGHT: ["Removed it from your shopping list."],
+    EATS_RED_MEAT: ["You just contributed to total consumption of red meat."],
+    DOES_NOT_RED_MEAT: [
+      "Congratulations! You saved this earth by avoiding red meat."
     ]
   }
 };
